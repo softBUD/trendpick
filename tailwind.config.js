@@ -1,11 +1,19 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
     content: [
-        './src/**/*.{js,ts,jsx,tsx}', // Next.js pages, components 경로
-        './stories/**/*.{js,ts,jsx,tsx}', // Storybook stories 경로
+        './app/**/*.{js,ts,jsx,tsx}',
+        './components/**/*.{js,ts,jsx,tsx}',
+        './stories/**/*.{js,ts,jsx,tsx}',
     ],
     theme: {
-        extend: {},
+        extend: {
+            colors: {
+                brand: '#ffffff',
+            },
+            fontFamily: {
+                sans: ['Inter', 'sans-serif'],
+            },
+        },
     },
     plugins: [],
-}
+};
