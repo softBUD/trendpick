@@ -2,22 +2,22 @@
 
 import * as React from "react";
 import VideoCard from "@/components/ui/videoCard/VideoCard";
+import VideoListSkeleton from "../skeleton/VideoListSkeleton";
+import {YoutubeVideoDTO} from "@/types/video";
 
 interface VideoListProps {
-  videos: {
-    id: string;
-    title: string;
-    thumbnailUrl: string;
-    channelTitle: string;
-    viewCount: string;
-  }[];
+  videos: YoutubeVideoDTO[];
 }
-
 export default function VideoList({videos}: VideoListProps) {
+  if (!videos || videos.length === 0) {
+    return <VideoListSkeleton />;
+  }
+
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
       {videos.map((video) => (
         <VideoCard
+          id={video.id}
           key={video.id}
           title={video.title}
           thumbnailUrl={video.thumbnailUrl}

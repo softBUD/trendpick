@@ -1,14 +1,26 @@
 "use client";
 
-import * as React from "react";
+import {useState, useEffect} from "react";
 import {cn} from "@/lib/utils";
 import {Search} from "lucide-react";
+import React from "react";
 
 export interface SearchBarProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 const SearchBar = React.forwardRef<HTMLInputElement, SearchBarProps>(
-  ({className, ...props}, ref) => {
+  ({className, placeholder = "Search videos", ...props}, ref) => {
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+      setIsMounted(true);
+    }, []);
+
+    if (!isMounted) {
+      // 클라이언트 전용 처리
+      return null;
+    }
+
     return (
       <div
         className={cn("relative w-full transition-all duration-300", className)}
@@ -20,7 +32,7 @@ const SearchBar = React.forwardRef<HTMLInputElement, SearchBarProps>(
         <input
           ref={ref}
           type="text"
-          placeholder="Search videos"
+          placeholder={placeholder}
           className={cn(
             "w-full bg-neutral-800 text-neutral-200 placeholder-neutral-500",
             "rounded-md py-2 pl-10 pr-4 outline-none",
