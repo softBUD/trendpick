@@ -43,7 +43,8 @@ const buttonVariants = cva(
         lg: "h-11 px-6 text-base",
       },
       color: {
-        default: "bg-brand text-white hover:bg-brand-dark",
+        default:
+          "text-white max-h-[40px] p-2 bg-neutral-700 rounded-md w-24 hover:bg-brand-dark transition",
         error: "bg-btn-red text-white hover:bg-[#BC3434]",
         success: "bg-btn-green text-white hover:bg-[#257A1F]",
       },

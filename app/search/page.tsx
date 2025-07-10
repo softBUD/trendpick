@@ -5,6 +5,8 @@ import SearchBar from "@/components/ui/searchBar/SearchBar";
 import Select from "@/components/ui/select/Select";
 import VideoList from "@/components/ui/videoList/VideoList";
 import VideoListSkeleton from "@/components/ui/skeleton/VideoListSkeleton";
+import EmptyState from "@/components/ui/empty/EmptyState";
+import Button from "@/components/ui/button/Button";
 
 export default function SearchPage() {
   const [videos, setVideos] = useState([]);
@@ -12,13 +14,12 @@ export default function SearchPage() {
   const [keyword, setKeyword] = useState("");
 
   const [period, setPeriod] = useState<string>();
-  const [viewCount, setViewCount] = useState<number>();
-  const [subscribers, setSubscribers] = useState<number>();
+  const [viewCount, setViewCount] = useState<string>();
+  const [subscribers, setSubscribers] = useState<string>();
 
   const handleSearch = async () => {
     setLoading(true);
 
-    // 업로드 기간 계산
     let publishedAfter;
     if (period === "week") {
       publishedAfter = new Date(
@@ -38,27 +39,59 @@ export default function SearchPage() {
       ).toISOString();
     }
 
-    const res = await fetch("/api/search", {
+    const res = await fetch("/api/videos/filterSearch", {
       method: "POST",
       body: JSON.stringify({
         keyword,
         publishedAfter,
-        viewCount,
-        subscriberCount: subscribers,
+        viewCount: viewCount ? Number(viewCount) : undefined,
+        subscriberCount: subscribers ? Number(subscribers) : undefined,
       }),
     });
 
     const data = await res.json();
-    setVideos(data);
+    setVideos(data.videos);
     setLoading(false);
+  };
+
+  const handleResetFilters = () => {
+    setKeyword("");
+    setPeriod(undefined);
+    setViewCount(undefined);
+    setSubscribers(undefined);
+    setVideos([]);
   };
 
   return (
     <div className="flex flex-col gap-6">
-      <SearchBar onChange={(e) => setKeyword(e.target.value)} />
+      <div className="flex gap-2">
+        <SearchBar
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+        />
+
+        <Button
+          onClick={handleSearch}
+          className="max-h-[40px] px-4"
+          loading={loading}
+        >
+          검색
+        </Button>
+        <Button
+          onClick={handleResetFilters}
+          variant="outline"
+          color="default"
+          className="min-w-24 text-neutral-200 p-2 border border-neutral-600 rounded-md hover:bg-neutral-700 transition"
+        >
+          초기화
+        </Button>
+      </div>
+
       <div className="flex gap-4">
         <Select
+          value={period}
           options={[
+            {label: "기간 전체", value: "none"},
             {label: "1주일", value: "week"},
             {label: "1개월", value: "month"},
             {label: "3개월", value: "3months"},
@@ -68,33 +101,41 @@ export default function SearchPage() {
           onChange={setPeriod}
         />
         <Select
+          value={viewCount}
           options={[
+            {label: "조회수 전체", value: "none"},
+            {label: "1만 이상", value: "10000"},
             {label: "10만 이상", value: "100000"},
             {label: "50만 이상", value: "500000"},
             {label: "100만 이상", value: "1000000"},
             {label: "500만 이상", value: "5000000"},
           ]}
           placeholder="조회수"
-          onChange={(v) => setViewCount(Number(v))}
+          onChange={setViewCount}
         />
         <Select
+          value={subscribers}
           options={[
+            {label: "구독자수 전체", value: "none"},
+            {label: "1만 이상", value: "10000"},
             {label: "10만 이상", value: "100000"},
             {label: "30만 이상", value: "300000"},
             {label: "50만 이상", value: "500000"},
             {label: "100만 이상", value: "1000000"},
           ]}
           placeholder="구독자수"
-          onChange={(v) => setSubscribers(Number(v))}
+          onChange={setSubscribers}
         />
       </div>
-      <button
-        onClick={handleSearch}
-        className="bg-brand text-white py-2 rounded-md w-full hover:bg-brand-dark transition"
-      >
-        검색
-      </button>
-      {loading ? <VideoListSkeleton /> : <VideoList videos={videos} />}
+
+      {loading && <VideoListSkeleton />}
+      {videos.length === 0 && !loading && (
+        <EmptyState
+          message="조건에 맞는 영상이 없어요."
+          description="조건을 조금 더 완화하거나 키워드를 변경해 보세요."
+        />
+      )}
+      {videos.length !== 0 && !loading && <VideoList videos={videos ?? []} />}
     </div>
   );
 }

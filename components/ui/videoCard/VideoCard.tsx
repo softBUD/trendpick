@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {cn} from "@/lib/utils";
+import {cn, formatViewCount} from "@/lib/utils";
 import type {VideoCardProps} from "@/types/video";
 
 export default function VideoCard({
@@ -31,7 +31,9 @@ export default function VideoCard({
             {title}
           </h3>
           <p className="text-[15px] mb-1 text-white">{channelTitle}</p>
-          <p className="text-xs mb-1 text-white">{viewCount} views</p>
+          <p className="text-xs mb-1 text-white">
+            {viewCount ? formatViewCount(viewCount) : viewCount} views
+          </p>
         </div>
       </div>
 

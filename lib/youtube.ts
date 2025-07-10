@@ -12,7 +12,12 @@ export async function fetchYoutubeVideos(keyword: string, pageToken?: string) {
   }`;
 
   const res = await fetch(url);
-  if (!res.ok) throw new Error("Failed to fetch videos");
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error("YouTube API error response:", errorText);
+    throw new Error("Failed to fetch videos");
+  }
+
   const data: YoutubeApiResponse = await res.json();
 
   const videoIds = data.items.map((item) => item.id.videoId).join(",");

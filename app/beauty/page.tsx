@@ -6,8 +6,7 @@ import {useYoutubeVideos} from "@/hooks/useYoutubeVideos";
 import {useState, useEffect, useRef} from "react";
 
 export default function SearchPage() {
-  // ✅ 실제로는 input이나 Select에서 받아서 세팅하도록 설계 (예시용 state)
-  const [keyword, setKeyword] = useState("뷰티");
+  const [keyword, setKeyword] = useState("메이크업 화장품 코덕");
 
   const {
     data,
@@ -20,7 +19,6 @@ export default function SearchPage() {
 
   const observerRef = useRef<HTMLDivElement | null>(null);
 
-  // ✅ Intersection Observer for infinite scroll
   useEffect(() => {
     if (!observerRef.current || !hasNextPage) return;
 

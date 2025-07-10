@@ -6,6 +6,7 @@ export interface YoutubeVideoDTO {
   channelTitle: string;
   viewCount: string;
   channelId: string;
+  subscriberCount?: number;
 }
 
 export interface YoutubeApiResponse {

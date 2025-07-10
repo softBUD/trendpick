@@ -9,18 +9,10 @@ export interface SearchBarProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 const SearchBar = React.forwardRef<HTMLInputElement, SearchBarProps>(
-  ({className, placeholder = "Search videos", ...props}, ref) => {
-    const [isMounted, setIsMounted] = useState(false);
-
-    useEffect(() => {
-      setIsMounted(true);
-    }, []);
-
-    if (!isMounted) {
-      // 클라이언트 전용 처리
-      return null;
-    }
-
+  (
+    {value, onChange, type, className, placeholder = "Search videos", ...props},
+    ref
+  ) => {
     return (
       <div
         className={cn("relative w-full transition-all duration-300", className)}
@@ -30,8 +22,11 @@ const SearchBar = React.forwardRef<HTMLInputElement, SearchBarProps>(
           size={18}
         />
         <input
-          ref={ref}
+          value={value}
+          onChange={onChange}
           type="text"
+          {...props}
+          ref={ref}
           placeholder={placeholder}
           className={cn(
             "w-full bg-neutral-800 text-neutral-200 placeholder-neutral-500",

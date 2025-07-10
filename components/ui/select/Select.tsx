@@ -12,18 +12,20 @@ import {
 import {cn} from "@/lib/utils";
 
 export interface CustomSelectProps {
+  value?: string;
   placeholder?: string;
   options: {label: string; value: string}[];
   onChange?: (value: string) => void;
 }
 
 const CustomSelect: React.FC<CustomSelectProps> = ({
+  value,
   placeholder = "Select an option",
   options,
   onChange,
 }) => {
   return (
-    <Select onValueChange={onChange}>
+    <Select value={value} onValueChange={onChange}>
       <SelectTrigger
         className={cn(
           "w-full bg-neutral-800 text-neutral-200 border-none",

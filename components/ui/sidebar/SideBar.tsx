@@ -15,6 +15,7 @@ export default function Sidebar() {
     {label: "축구", href: "/football"},
     {label: "아이돌", href: "/idol"},
     {label: "재테크", href: "/investment"},
+    {label: "검색", href: "/search"},
   ];
 
   return (

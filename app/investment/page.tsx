@@ -3,40 +3,56 @@
 import VideoList from "@/components/ui/videoList/VideoList";
 import VideoListSkeleton from "@/components/ui/skeleton/VideoListSkeleton";
 import {useYoutubeVideos} from "@/hooks/useYoutubeVideos";
-import {useEffect, useRef} from "react";
+import {useState, useEffect, useRef} from "react";
 
-export default function BeautyPage() {
-  const {data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading} =
-    useYoutubeVideos("투자 재테크");
+export default function SearchPage() {
+  const [keyword, setKeyword] = useState("투자 재테크");
 
-  const loader = useRef<HTMLDivElement | null>(null);
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useYoutubeVideos(keyword);
 
-  // Intersection Observer를 통한 무한스크롤 트리거
+  const observerRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
-    if (!loader.current || !hasNextPage) return;
+    if (!observerRef.current || !hasNextPage) return;
 
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        fetchNextPage();
-      }
-    });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchNextPage();
+        }
+      },
+      {threshold: 1}
+    );
 
-    observer.observe(loader.current);
+    observer.observe(observerRef.current);
 
     return () => {
-      if (loader.current) observer.unobserve(loader.current);
+      observer.disconnect();
     };
-  }, [loader.current, fetchNextPage, hasNextPage]);
+  }, [hasNextPage, fetchNextPage]);
 
-  if (isLoading) return <VideoListSkeleton />;
+  if (isLoading && !isFetchingNextPage) {
+    return <VideoListSkeleton />;
+  }
 
-  const videos = data?.pages.flatMap((page) => page.videos) ?? [];
+  if (isError) {
+    return <p className="text-red-500">영상을 불러올 수 없습니다.</p>;
+  }
+
+  const allVideos = data?.pages.flatMap((page) => page.videos) ?? [];
 
   return (
-    <div>
-      <VideoList videos={videos} />
+    <div className="flex flex-col gap-6">
+      <VideoList videos={allVideos} />
+      <div ref={observerRef} className="h-10" />
       {isFetchingNextPage && <VideoListSkeleton />}
-      <div ref={loader} />
     </div>
   );
 }
