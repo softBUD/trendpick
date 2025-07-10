@@ -5,6 +5,7 @@ export interface YoutubeVideoDTO {
   thumbnailUrl: string;
   channelTitle: string;
   viewCount: string;
+  channelId: string;
 }
 
 export interface YoutubeApiResponse {

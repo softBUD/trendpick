@@ -1,7 +1,7 @@
 "use client";
 
 import VideoList from "@/components/ui/videoList/VideoList";
-import {usePopularVideosInfinite} from "@/hooks/usePopularVideos";
+import {usePopularVideos} from "@/hooks/usePopularVideos";
 import VideoListSkeleton from "@/components/ui/skeleton/VideoListSkeleton";
 import {useEffect, useRef} from "react";
 
@@ -13,7 +13,7 @@ export default function HomePage() {
     isFetchingNextPage,
     isLoading,
     isError,
-  } = usePopularVideosInfinite();
+  } = usePopularVideos();
 
   const observerRef = useRef<HTMLDivElement | null>(null);
 
