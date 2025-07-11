@@ -6,10 +6,12 @@ import type {Metadata} from "next";
 
 export const metadata: Metadata = {
   title: "TrendPick - Discover Trending Videos",
-  description: "유튜브의 인기 영상을 한눈에! 검색을 한번에!",
+  description:
+    "유튜브의 인기 영상을 원하는 카테고리 별로, 원하는 조건 별로 찾아보세요",
   openGraph: {
     title: "TrendPick",
-    description: "유튜브의 인기 영상을 한눈에! 검색을 한번에!",
+    description:
+      "유튜브의 인기 영상을 원하는 카테고리 별로, 원하는 조건 별로 찾아보세요",
     url: "https://your-domain.com",
     siteName: "TrendPick",
   },
