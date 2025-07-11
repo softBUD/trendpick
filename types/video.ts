@@ -14,19 +14,16 @@ export interface YoutubeApiResponse {
   nextPageToken?: string;
 }
 
-// 컴포넌트에서 사용할 ViewModel 타입
-export interface VideoCardProps {
-  id: string;
-  title: string;
-  thumbnailUrl: string;
-  channelTitle: string;
-  viewCount?: string;
+// 검색기능 파라미터
+export interface YoutubeFilterSearchParams {
+  keyword: string;
+  publishedAfter?: string;
+  viewCount?: number;
+  subscriberCount?: number;
 }
 
-// 필터링 조회 파라미터
-export type YoutubeSearchParams = {
-  keyword: string;
-  maxResults?: number;
-  order?: "date" | "rating" | "relevance" | "title" | "viewCount";
-  publishedAfter?: string;
-};
+// 검색기능 response
+export interface YoutubeFilterSearchRes {
+  videos: YoutubeVideoDTO[];
+  nextPageToken?: string;
+}

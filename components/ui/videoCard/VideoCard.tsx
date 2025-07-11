@@ -2,7 +2,14 @@
 
 import * as React from "react";
 import {cn, formatViewCount} from "@/lib/utils";
-import type {VideoCardProps} from "@/types/video";
+
+export interface VideoCardProps {
+  id: string;
+  title: string;
+  thumbnailUrl: string;
+  channelTitle: string;
+  viewCount?: string;
+}
 
 export default function VideoCard({
   id,

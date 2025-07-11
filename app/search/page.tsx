@@ -7,9 +7,9 @@ import VideoList from "@/components/ui/videoList/VideoList";
 import VideoListSkeleton from "@/components/ui/skeleton/VideoListSkeleton";
 import EmptyState from "@/components/ui/empty/EmptyState";
 import Button from "@/components/ui/button/Button";
+import {useYoutubeFilterVideos} from "@/hooks/useYoutubeFilterVideos";
 
 export default function SearchPage() {
-  const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [keyword, setKeyword] = useState("");
 
@@ -17,9 +17,9 @@ export default function SearchPage() {
   const [viewCount, setViewCount] = useState<string>();
   const [subscribers, setSubscribers] = useState<string>();
 
-  const handleSearch = async () => {
-    setLoading(true);
+  const {mutate, data, isPending, isError} = useYoutubeFilterVideos();
 
+  const handleSearch = async () => {
     let publishedAfter;
     if (period === "week") {
       publishedAfter = new Date(
@@ -38,20 +38,12 @@ export default function SearchPage() {
         new Date().setMonth(new Date().getMonth() - 6)
       ).toISOString();
     }
-
-    const res = await fetch("/api/videos/filterSearch", {
-      method: "POST",
-      body: JSON.stringify({
-        keyword,
-        publishedAfter,
-        viewCount: viewCount ? Number(viewCount) : undefined,
-        subscriberCount: subscribers ? Number(subscribers) : undefined,
-      }),
+    mutate({
+      keyword,
+      publishedAfter,
+      viewCount: viewCount ? Number(viewCount) : undefined,
+      subscriberCount: subscribers ? Number(subscribers) : undefined,
     });
-
-    const data = await res.json();
-    setVideos(data.videos);
-    setLoading(false);
   };
 
   const handleResetFilters = () => {
@@ -59,7 +51,6 @@ export default function SearchPage() {
     setPeriod(undefined);
     setViewCount(undefined);
     setSubscribers(undefined);
-    setVideos([]);
   };
 
   return (
@@ -72,7 +63,7 @@ export default function SearchPage() {
 
         <Button
           onClick={handleSearch}
-          className="max-h-[40px] px-4"
+          className="max-h-[40px] px-4 cursor-pointer hover:bg-neutral-600"
           loading={loading}
         >
           검색
@@ -128,14 +119,16 @@ export default function SearchPage() {
         />
       </div>
 
-      {loading && <VideoListSkeleton />}
-      {videos.length === 0 && !loading && (
+      {isPending && <VideoListSkeleton />}
+      {!isPending && data?.videos.length === 0 && (
         <EmptyState
           message="조건에 맞는 영상이 없어요."
           description="조건을 조금 더 완화하거나 키워드를 변경해 보세요."
         />
       )}
-      {videos.length !== 0 && !loading && <VideoList videos={videos ?? []} />}
+      {!isPending && data && data?.videos.length !== 0 && (
+        <VideoList videos={data.videos} />
+      )}
     </div>
   );
 }
