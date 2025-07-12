@@ -3,10 +3,10 @@
 import VideoList from "@/components/ui/videoList/VideoList";
 import VideoListSkeleton from "@/components/ui/skeleton/VideoListSkeleton";
 import {useYoutubeVideos} from "@/hooks/useYoutubeVideos";
-import {useState, useEffect, useRef} from "react";
+import {useEffect, useRef} from "react";
 
 export default function SearchPage() {
-  const [keyword, setKeyword] = useState("케이팝 아이돌");
+  const keyword = "케이팝 아이돌";
 
   const {
     data,

@@ -10,14 +10,13 @@ import Button from "@/components/ui/button/Button";
 import {useYoutubeFilterVideos} from "@/hooks/useYoutubeFilterVideos";
 
 export default function SearchPage() {
-  const [loading, setLoading] = useState(false);
   const [keyword, setKeyword] = useState("");
 
   const [period, setPeriod] = useState<string>();
   const [viewCount, setViewCount] = useState<string>();
   const [subscribers, setSubscribers] = useState<string>();
 
-  const {mutate, data, isPending, isError} = useYoutubeFilterVideos();
+  const {mutate, data, isPending} = useYoutubeFilterVideos();
 
   const handleSearch = async () => {
     let publishedAfter;
@@ -64,7 +63,7 @@ export default function SearchPage() {
         <Button
           onClick={handleSearch}
           className="max-h-[40px] px-4 cursor-pointer hover:bg-neutral-600"
-          loading={loading}
+          loading={isPending}
         >
           검색
         </Button>

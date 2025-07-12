@@ -1,14 +1,12 @@
 "use client";
-
-import {useState, useEffect} from "react";
 import {cn} from "@/lib/utils";
 import {Search} from "lucide-react";
 import React from "react";
 
-export interface SearchBarProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
-
-const SearchBar = React.forwardRef<HTMLInputElement, SearchBarProps>(
+const SearchBar = React.forwardRef<
+  HTMLInputElement,
+  React.InputHTMLAttributes<HTMLInputElement>
+>(
   (
     {value, onChange, type, className, placeholder = "Search videos", ...props},
     ref
@@ -24,7 +22,7 @@ const SearchBar = React.forwardRef<HTMLInputElement, SearchBarProps>(
         <input
           value={value}
           onChange={onChange}
-          type="text"
+          type={type}
           {...props}
           ref={ref}
           placeholder={placeholder}
