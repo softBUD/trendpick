@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import {cn, formatViewCount} from "@/lib/utils";
+import Image from "next/image";
 
 export interface VideoCardProps {
   id: string;
@@ -28,10 +29,12 @@ export default function VideoCard({
           "flex flex-row rounded-xl w-full cursor-pointer overflow-hidden shadow-sm hover:shadow-lg bg-neutral-800 transition"
         )}
       >
-        <img
+        <Image
           src={thumbnailUrl}
           alt={title}
-          className="aspect-video h-full object-cover"
+          width={320}
+          height={180}
+          className="object-cover rounded-xl"
         />
         <div className="p-6">
           <h3 className="text-xl font-semibold mb-1 line-clamp-2 text-white">
