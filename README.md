@@ -3,6 +3,8 @@
 ## ✨ 소개
 
 유튜브 API를 활용하여 카테고리 별로 트렌딩 영상과 업로드 날짜, 조회수, 구독자 수 등 다양한 조건으로 필터링할 수 있는 Next.js 기반 프로젝트입니다.
+👉 **데모 링크**: [https://trendpick.vercel.app/](https://trendpick.vercel.app/)
+
 
 ## 💻 기술 스택
 
