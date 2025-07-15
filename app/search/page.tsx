@@ -1,6 +1,6 @@
 "use client";
 
-import {useState} from "react";
+import {useState, useRef, useEffect} from "react";
 import SearchBar from "@/components/ui/searchBar/SearchBar";
 import Select from "@/components/ui/select/Select";
 import VideoList from "@/components/ui/videoList/VideoList";
@@ -16,9 +16,31 @@ export default function SearchPage() {
   const [viewCount, setViewCount] = useState<string>();
   const [subscribers, setSubscribers] = useState<string>();
 
-  const {mutate, data, isPending} = useYoutubeFilterVideos();
+  const [searchParams, setSearchParams] = useState<any | null>(null);
 
-  const handleSearch = async () => {
+  const {data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading} =
+    useYoutubeFilterVideos(searchParams);
+
+  const observerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!observerRef.current || !hasNextPage) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchNextPage();
+        }
+      },
+      {threshold: 1}
+    );
+
+    observer.observe(observerRef.current);
+
+    return () => observer.disconnect();
+  }, [hasNextPage, fetchNextPage]);
+
+  const handleSearch = () => {
     let publishedAfter;
     if (period === "week") {
       publishedAfter = new Date(
@@ -37,11 +59,14 @@ export default function SearchPage() {
         new Date().setMonth(new Date().getMonth() - 6)
       ).toISOString();
     }
-    mutate({
+
+    setSearchParams({
       keyword,
       publishedAfter,
-      viewCount: viewCount ? Number(viewCount) : undefined,
-      subscriberCount: subscribers ? Number(subscribers) : undefined,
+      viewCount:
+        viewCount && viewCount !== "none" ? Number(viewCount) : undefined,
+      subscriberCount:
+        subscribers && subscribers !== "none" ? Number(subscribers) : undefined,
     });
   };
 
@@ -50,7 +75,10 @@ export default function SearchPage() {
     setPeriod(undefined);
     setViewCount(undefined);
     setSubscribers(undefined);
+    setSearchParams(null);
   };
+
+  const allVideos = data?.pages.flatMap((page) => page.videos) ?? [];
 
   return (
     <div className="flex flex-col gap-6">
@@ -63,7 +91,7 @@ export default function SearchPage() {
         <Button
           onClick={handleSearch}
           className="max-h-[40px] px-4 cursor-pointer hover:bg-neutral-600"
-          loading={isPending}
+          loading={isLoading || isFetchingNextPage}
         >
           검색
         </Button>
@@ -117,17 +145,35 @@ export default function SearchPage() {
           onChange={setSubscribers}
         />
       </div>
-
-      {isPending && <VideoListSkeleton />}
-      {!isPending && data?.videos.length === 0 && (
+      {!keyword ? (
+        <EmptyState
+          message="검색어를 입력해주세요."
+          description="검색어와 조건을 입력한 뒤 검색 버튼을 눌러주세요."
+        />
+      ) : isLoading ? (
+        <VideoListSkeleton />
+      ) : allVideos.length === 0 ? (
+        <EmptyState
+          message="조건에 맞는 영상이 없어요."
+          description="조건을 조금 더 완화하거나 키워드를 변경해 보세요."
+        />
+      ) : (
+        <VideoList videos={allVideos} />
+      )}
+      {/* {(isLoading || (!data && !isError)) && <VideoListSkeleton />}
+      {!isLoading && !isError && allVideos.length === 0 && (
         <EmptyState
           message="조건에 맞는 영상이 없어요."
           description="조건을 조금 더 완화하거나 키워드를 변경해 보세요."
         />
       )}
-      {!isPending && data && data?.videos.length !== 0 && (
-        <VideoList videos={data.videos} />
-      )}
+      {!isLoading && !isError && allVideos.length > 0 && (
+        <>
+          <VideoList videos={allVideos} />
+          <div ref={observerRef} className="h-10" />
+          {isFetchingNextPage && <VideoListSkeleton />}
+        </>
+      )} */}
     </div>
   );
 }
