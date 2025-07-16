@@ -8,6 +8,7 @@ import VideoListSkeleton from "@/components/ui/skeleton/VideoListSkeleton";
 import EmptyState from "@/components/ui/empty/EmptyState";
 import Button from "@/components/ui/button/Button";
 import {useYoutubeFilterVideos} from "@/hooks/useYoutubeFilterVideos";
+import {YoutubeFilterSearchParams} from "@/types/video";
 
 export default function SearchPage() {
   const [keyword, setKeyword] = useState("");
@@ -16,7 +17,8 @@ export default function SearchPage() {
   const [viewCount, setViewCount] = useState<string>();
   const [subscribers, setSubscribers] = useState<string>();
 
-  const [searchParams, setSearchParams] = useState<any | null>(null);
+  const [searchParams, setSearchParams] =
+    useState<YoutubeFilterSearchParams | null>(null);
 
   const {data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading} =
     useYoutubeFilterVideos(searchParams);
